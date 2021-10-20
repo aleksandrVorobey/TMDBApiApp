@@ -10,8 +10,11 @@ import UIKit
 class MoviesUncomingCollectionView: UICollectionView {
     
     var uncomingMovies = [Movie]()
+    var selectedMovies = [Movie]()
     
     var newViewController: UIViewController?
+    
+    var isButtonOn = false
     
     init() {
         let layout = UICollectionViewFlowLayout()
@@ -39,6 +42,18 @@ class MoviesUncomingCollectionView: UICollectionView {
         self.uncomingMovies = setMoviesArray
     }
     
+    func selectedMoviesArray() {
+        isButtonOn = true
+        let selectedMovie = self.indexPathsForSelectedItems?.reduce([], { (movies, indexPath) -> [Movie] in
+            var selectedMovies = movies
+            let movie = uncomingMovies[indexPath.item]
+            selectedMovies.append(movie)
+            return selectedMovies
+        })
+        selectedMovies = selectedMovie ?? []
+        print(selectedMovies)
+    }
+    
 }
 
 extension MoviesUncomingCollectionView: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -54,10 +69,12 @@ extension MoviesUncomingCollectionView: UICollectionViewDelegate, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let movie = uncomingMovies[indexPath.item]
-        let detailVC = DetailMovieViewController()
-        detailVC.setDetailMovie(movie: movie)
-        newViewController?.navigationController?.pushViewController(detailVC, animated: true)
+        if !isButtonOn {
+            let movie = uncomingMovies[indexPath.item]
+            let detailVC = DetailMovieViewController()
+            detailVC.setDetailMovie(movie: movie)
+            newViewController?.navigationController?.pushViewController(detailVC, animated: true)
+        }
     }
 
 }
