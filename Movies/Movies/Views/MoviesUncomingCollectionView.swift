@@ -10,7 +10,7 @@ import UIKit
 class MoviesUncomingCollectionView: UICollectionView {
     
     var uncomingMovies = [Movie]()
-    var selectedMovies = [Movie]()
+    var selectedUncomingMovies = [Movie]()
     
     var newViewController: UIViewController?
     
@@ -44,14 +44,20 @@ class MoviesUncomingCollectionView: UICollectionView {
     
     func selectedMoviesArray() {
         isButtonOn = true
-        let selectedMovie = self.indexPathsForSelectedItems?.reduce([], { (movies, indexPath) -> [Movie] in
+        let selectedMovies = self.indexPathsForSelectedItems?.reduce([], { (movies, indexPath) -> [Movie] in
             var selectedMovies = movies
             let movie = uncomingMovies[indexPath.item]
             selectedMovies.append(movie)
             return selectedMovies
         })
-        selectedMovies = selectedMovie ?? []
-        print(selectedMovies)
+        selectedUncomingMovies.append(contentsOf: selectedMovies ?? [])
+        //selectedMovies = selectedMovie ?? []
+        print("Array uncoming select\(selectedUncomingMovies)")
+    }
+    
+    func refresh() {
+        isButtonOn = false
+        self.selectItem(at: nil, animated: true, scrollPosition: [])
     }
     
 }
@@ -70,6 +76,7 @@ extension MoviesUncomingCollectionView: UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if !isButtonOn {
+            self.selectItem(at: nil, animated: false, scrollPosition: [])
             let movie = uncomingMovies[indexPath.item]
             let detailVC = DetailMovieViewController()
             detailVC.setDetailMovie(movie: movie)

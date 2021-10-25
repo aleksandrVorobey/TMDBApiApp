@@ -10,7 +10,6 @@ import UIKit
 class MovieViewController: UIViewController {
     
     private let movieManager = MovieManager()
-    
             
     private let popularMoviesLabel: UILabel = {
         let label = UILabel()
@@ -39,6 +38,8 @@ class MovieViewController: UIViewController {
         return button
     }()
     
+    var isOn: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -54,6 +55,31 @@ class MovieViewController: UIViewController {
     
     @objc func selectButtonTapped() {
         print(#function)
+        if self.selectedBarButton.image == UIImage(systemName: "list.star") {
+            alert()
+        } else {
+            self.selectedBarButton.image = UIImage(systemName: "list.star")
+            self.moviesUncomingCollectionView.selectedMoviesArray()
+            self.moviesPopularCollectionView.selectedMoviesArray()
+            self.moviesPopularCollectionView.refresh()
+            self.moviesUncomingCollectionView.refresh()
+        }
+    }
+    
+    func alert() {
+        let alertController = UIAlertController(title: "Add in favorites", message: "Change movie for add in favorites", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Ok", style: .default) { _ in
+            self.selectedBarButton.image = UIImage(systemName: "checkmark.circle.fill")
+            self.moviesUncomingCollectionView.isButtonOn = true
+            self.moviesPopularCollectionView.isButtonOn = true
+        }
+        let cancel = UIAlertAction(title: "Cancel", style: .default) { _ in
+            self.moviesUncomingCollectionView.refresh()
+            self.moviesPopularCollectionView.refresh()
+        }
+        alertController.addAction(cancel)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
     }
     
     //MARK: - Fetch Movies
@@ -127,6 +153,6 @@ class MovieViewController: UIViewController {
 
 extension MovieViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
+        print(searchText)            
     }
 }

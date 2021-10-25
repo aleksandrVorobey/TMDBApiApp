@@ -1,15 +1,14 @@
 //
-//  MovieCollectionViewCell.swift
+//  FavoriteslMoviesCollectionViewCell.swift
 //  Movies
 //
-//  Created by Александр Воробей on 17.10.2021.
+//  Created by Александр Воробей on 25.10.2021.
 //
 
 import UIKit
 
-class MovieCollectionViewCell: UICollectionViewCell {
-    
-    static let reuseId = "MovieCell"
+class FavoriteslMoviesCollectionViewCell: UICollectionViewCell {
+    static let reuseId = "DetailMovieCell"
     
     private let movieManager = MovieManager()
     
@@ -20,14 +19,6 @@ class MovieCollectionViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 9
         imageView.clipsToBounds = true
-        return imageView
-    }()
-    
-    private let checkmark: UIImageView = {
-        let image = UIImage(systemName: "heart.fill")
-        let imageView = UIImageView(image: image)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.alpha = 0
         return imageView
     }()
     
@@ -48,18 +39,12 @@ class MovieCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    override var isSelected: Bool {
-        didSet {
-            self.updateSelectedState()
-        }
-    }
+
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         setupMovieUI()
-        //updateSelectedState()
     }
     
     required init?(coder: NSCoder) {
@@ -79,11 +64,7 @@ class MovieCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         movieImageView.image = nil
     }
-    
-    func updateSelectedState() {
-            movieImageView.alpha = isSelected ? 0.7 : 1
-            checkmark.alpha = isSelected ? 1 : 0
-    }
+
 
     //MARK: - Setup cell and set image
     func setupCell(movie: Movie) {
@@ -108,7 +89,6 @@ class MovieCollectionViewCell: UICollectionViewCell {
         
         addSubview(movieImageView)
         addSubview(titleLabel)
-        addSubview(checkmark)
         addSubview(releaseDateLabel)
         
         NSLayoutConstraint.activate([
@@ -122,10 +102,7 @@ class MovieCollectionViewCell: UICollectionViewCell {
             
             releaseDateLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
             releaseDateLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5),
-            releaseDateLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
-            
-            checkmark.trailingAnchor.constraint(equalTo: movieImageView.trailingAnchor, constant: -8),
-            checkmark.bottomAnchor.constraint(equalTo: movieImageView.bottomAnchor, constant: -8)
+            releaseDateLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0)
         ])
     }
 }

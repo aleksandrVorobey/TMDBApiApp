@@ -10,8 +10,13 @@ import UIKit
 class MoviesPopularCollectionView: UICollectionView {
     
     private var popularMovies = [Movie]()
+    var selectedPopularMovies = [Movie]()
+    
+    var favoritesPopularCollectionView = FavoritesPopularCollectionView()
     
     var newViewController: UIViewController?
+    
+    var isButtonOn = false
 
      init() {
         let layout = UICollectionViewFlowLayout()
@@ -40,6 +45,23 @@ class MoviesPopularCollectionView: UICollectionView {
         self.popularMovies = setMoviesArray
     }
     
+    func selectedMoviesArray() {
+        isButtonOn = true
+        let selectedMovies = self.indexPathsForSelectedItems?.reduce([], { (movies, indexPath) -> [Movie] in
+            var selectedMovies = movies
+            let movie = popularMovies[indexPath.item]
+            selectedMovies.append(movie)
+            return selectedMovies
+        })
+        selectedPopularMovies.append(contentsOf: selectedMovies ?? [])
+        print("Array popular select\(selectedPopularMovies)")
+    }
+    
+    func refresh() {
+        isButtonOn = false
+        self.selectItem(at: nil, animated: true, scrollPosition: [])
+        favoritesPopularCollectionView.set(setMoviesArray: selectedPopularMovies)
+    }
 }
 
 extension MoviesPopularCollectionView: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -55,10 +77,13 @@ extension MoviesPopularCollectionView: UICollectionViewDelegate, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let movie = popularMovies[indexPath.item]
-        let detailVC = DetailMovieViewController()
-        detailVC.setDetailMovie(movie: movie)
-        newViewController?.navigationController?.pushViewController(detailVC, animated: true)
+        if !isButtonOn {
+            self.selectItem(at: nil, animated: false, scrollPosition: [])
+            let movie = popularMovies[indexPath.item]
+            let detailVC = DetailMovieViewController()
+            detailVC.setDetailMovie(movie: movie)
+            newViewController?.navigationController?.pushViewController(detailVC, animated: true)
+        }
     }
 }
 
